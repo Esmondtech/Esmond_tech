@@ -1,0 +1,63 @@
+import turtle
+import colorsys
+
+# --- Setup the Screen ---
+t = turtle.Turtle()
+screen = turtle.Screen()
+screen.setup(width=800, height=800)
+screen.bgcolor("black")  # Match the black background in the image
+t.speed(0)               # Set speed to fastest (0) for quick drawing
+t.hideturtle()           # Hide the turtle icon
+turtle.colormode(255)    # Use 255 color range for better control
+
+# --- Parameters ---
+N_petals = 70             # Number of petals to draw (controls density)
+N_colors = 12             # Number of distinct color shifts in the rainbow (for HUE step)
+initial_size = 180        # Initial size of the petals
+rotation_angle = 360 / N_petals # The rotation for each petal
+
+# --- Function to Draw One Petal ---
+# This is a simple shape that resembles a leaf/petal
+def draw_petal(length, angle):
+    t.left(angle)
+    t.forward(length)
+    t.right(angle * 2)
+    t.forward(length)
+    t.right(180 - angle * 2)
+    t.forward(length)
+    t.right(angle * 2)
+    t.forward(length)
+    t.right(180) # Reset direction to face where it started
+
+# --- Drawing Loop ---
+for i in range(N_petals):
+    # Calculate color using the HSV (Hue, Saturation, Value) system
+    # This creates a smooth rainbow effect by incrementing the 'hue' value
+    hue = i / N_colors  # Cycle through 0.0 to N_colors/N_colors
+    
+    # Convert HSV to RGB (0-1 range)
+    r, g, b = colorsys.hsv_to_rgb(hue, 1.0, 1.0) 
+    
+    # Convert RGB (0-1 range) to 0-255 range for turtle
+    t.pencolor(int(r*255), int(g*255), int(b*255))
+    
+    # Set the pen thickness
+    t.pensize(2) 
+    
+    # Start drawing a petal
+    t.penup()
+    t.goto(0, 0)
+    t.pendown()
+    
+    # Rotate the turtle's orientation before drawing the next petal
+    t.setheading(i * rotation_angle)
+    
+    # Draw the leaf-like shape (a simplified version of the image's petal)
+    # The '15' determines the sharpness/curviness of the leaf shape
+    t.circle(initial_size - i * 1.5, 90) # Draw an arc
+    t.left(180)                       # Turn around
+    t.circle(initial_size - i * 1.5, 90) # Draw another arc
+    t.right(90)                       # Adjust for the next rotation
+
+# --- Finish Up ---
+turtle.done()
